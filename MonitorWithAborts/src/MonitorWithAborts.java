@@ -17,6 +17,9 @@ public class MonitorWithAborts {
 		monitored_object.save();
 	}
 	
+	public void release() {
+	    mutex.unlock();
+	}
 	public void abort() {
 		try {
 			monitored_object.restore();
@@ -35,6 +38,7 @@ public class MonitorWithAborts {
 	}
 	
 	public void abortNotify() {
+	    	
 		avail.signal();
 	}
 	

@@ -1,21 +1,28 @@
 
+import static org.junit.Assert.*;
+import org.junit.Test;
+
 public class TestObjectDriver implements Savable {
 
     int var1 = 0;
     int var2 = 0;
     int saveVar1 = 0;
     int saveVar2 = 0;
-    
-    TestObjectDriver(int var1, int var2){
+
+    public TestObjectDriver(int var1, int var2) {
 	this.var1 = var1;
 	this.var2 = var2;
     }
-  
+    
+    public TestObjectDriver(){
+	
+    }
+    
     @Override
     public void save() {
 	saveVar1 = var1;
 	saveVar2 = var2;
-	
+
     }
 
     @Override
@@ -23,15 +30,22 @@ public class TestObjectDriver implements Savable {
 	var1 = saveVar1;
 	var2 = saveVar2;
     }
-    
+
     public void increase() {
 	var1++;
 	var2++;
     }
-    public static void main(String[] args){
-	TestObjectDriver obj1 = new TestObjectDriver(5,6);
-	MonitorWithAborts monitor1 = new MonitorWithAborts(obj1);
-	monitor1.synchronize();
-	
+
+    public void test1A(MonitorWithAborts monitor) {
+	monitor.synchronize();
+	increase();
+	monitor.abortNotify();
+	monitor.release();
     }
+
+    public synchronized void test1B() {
+	increase();
+	notify();
+    }    
+    
 }
