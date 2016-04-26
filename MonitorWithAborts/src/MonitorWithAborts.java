@@ -28,7 +28,7 @@ public class MonitorWithAborts {
 		}
 	}
 	
-	public void abortWait() {
+	public void waitForAbort() {
 		try {
 			avail.await();
 		} catch (InterruptedException e) {}
