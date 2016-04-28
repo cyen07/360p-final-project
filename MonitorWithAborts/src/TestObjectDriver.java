@@ -45,6 +45,16 @@ public class TestObjectDriver implements Savable {
 	notify();
     }  
     
+    public synchronized void test2B() {
+    	try{
+    		increase();
+    		throw new Exception();
+    	}
+    	catch(Exception e) {
+    		
+    	}
+    }
+    
     public void test2A(MonitorWithAborts monitor) {
 	monitor.synchronize();
 	try{
