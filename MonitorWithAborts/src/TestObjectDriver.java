@@ -1,13 +1,10 @@
 
-import static org.junit.Assert.*;
-import org.junit.Test;
-
 public class TestObjectDriver implements Savable {
 
     int var1 = 0;
     int var2 = 0;
-    int saveVar1 = 0;
-    int saveVar2 = 0;
+    private int saveVar1 = 0;
+    private int saveVar2 = 0;
 
     public TestObjectDriver(int var1, int var2) {
 	this.var1 = var1;
@@ -38,6 +35,7 @@ public class TestObjectDriver implements Savable {
 
     public void test1A(MonitorWithAborts monitor) {
 	monitor.synchronize();
+	System.out.println(this.saveVar1 + " " + this.saveVar2);
 	increase();
 	monitor.abortNotify();
 	monitor.release();
@@ -46,6 +44,28 @@ public class TestObjectDriver implements Savable {
     public synchronized void test1B() {
 	increase();
 	notify();
-    }    
+    }  
     
+    public void test2A(MonitorWithAborts monitor) {
+	monitor.synchronize();
+	try{
+	    increase();
+	    throw new Exception();
+	}
+	catch(Exception e){
+	    monitor.abort();
+	}
+    }
+    
+    
+}
+
+class SyncThread1 implements Runnable{
+
+    @Override
+    public void run() {
+	// TODO Auto-generated method stub
+	
+    }
+	
 }
