@@ -3,8 +3,8 @@ public class TestObjectDriver implements Savable {
 
     int var1 = 0;
     int var2 = 0;
-    private int saveVar1 = 0;
-    private int saveVar2 = 0;
+    int saveVar1 = 0;
+    int saveVar2 = 0;
 
     public TestObjectDriver(int var1, int var2) {
 	this.var1 = var1;
