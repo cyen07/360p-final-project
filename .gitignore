@@ -1,1 +1,5 @@
 .project
+MonitorWithAborts/bin/TestObjectDriver.class
+*.java
+MonitorWithAborts/src/TestSuite.java
+MonitorWithAborts/src/TestObjectDriver.java

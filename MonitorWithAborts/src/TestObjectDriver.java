@@ -11,10 +11,6 @@ public class TestObjectDriver implements Savable {
 	this.var2 = var2;
     }
     
-    public TestObjectDriver(){
-	
-    }
-    
     @Override
     public void save() {
 	saveVar1 = var1;

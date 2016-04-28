@@ -85,7 +85,6 @@ public class TestSuite {
 	    public void run() {
 		for (int i = 0; i < 50; i++) {
 		    System.out.println("Thread 3 count " + i);
-
 		}
 		try {
 		    Thread.sleep(500);
@@ -110,9 +109,9 @@ public class TestSuite {
 	System.out.println("Expected Time of Test ~2000ms: " + difference + "ms");
 	assertTrue((obj1.var1 == 2) && (obj1.var2 == 12));
     }
-    
+
     @Test
-    public void Test4A(){
+    public void Test4A() {
 	TestObjectDriver obj1 = new TestObjectDriver(0, 10);
 	MonitorWithAborts monitor1 = new MonitorWithAborts(obj1);
 	Thread thread1 = new Thread() {
@@ -120,9 +119,9 @@ public class TestSuite {
 	    @Override
 	    public void run() {
 		monitor1.synchronize();
-		try{
+		try {
 		    Thread.sleep(200);
-		} catch(Exception e) {
+		} catch (Exception e) {
 		    e.printStackTrace();
 		}
 		obj1.increase();
@@ -130,18 +129,18 @@ public class TestSuite {
 		for (int i = 0; i < 50; i++) {
 		    System.out.println("Thread 1 count " + i + " ++");
 		}
-		
+
 		monitor1.abortNotify();
 		monitor1.release();
 	    }
 	};
 	Thread thread2 = new Thread() {
-	    
+
 	    @Override
 	    public void run() {
-		try{
+		try {
 		    Thread.sleep(100);
-		} catch(Exception e) {
+		} catch (Exception e) {
 		    e.printStackTrace();
 		}
 		monitor1.synchronize();
@@ -151,12 +150,12 @@ public class TestSuite {
 		    System.out.println("Thread 2 count " + i + " --");
 		}
 		try {
-		    
+
 		    throw new Exception();
 		} catch (Exception e) {
 		    monitor1.abort();
 		}
-		
+
 	    }
 	};
 	long start = System.currentTimeMillis();
@@ -172,5 +171,32 @@ public class TestSuite {
 	long difference = done - start;
 	System.out.println("Expected Time of Test ~200 " + difference + "ns");
 	assertTrue((obj1.var1 == 2) && (obj1.var2 == 12));
+    }
+    
+    @Test
+    public void Test5A() {
+	TestObjectDriver obj1 = new TestObjectDriver(0, 10);
+	MonitorWithAborts monitor1 = new MonitorWithAborts(obj1);
+	long start = System.nanoTime();
+	for (int i = 0; i < 1000; i++) {
+	    obj1.test1A(monitor1);
+	}
+	long done = System.nanoTime();
+	long difference = done - start;
+	System.out.println("Execution Time of Monitor with Aborts (not aborted): " + difference + "ns");
+	assertTrue((obj1.var1 == 1000) && (obj1.var2 == 1010));
+    }
+
+    @Test
+    public void Test5B() {
+	TestObjectDriver obj1 = new TestObjectDriver(0, 10);
+	long start = System.nanoTime();
+	for (int i = 0; i < 1000; i++) {
+	    obj1.test1B();
+	}
+	long done = System.nanoTime();
+	long difference = done - start;
+	System.out.println("Execution Time of Synchronized Monitor: " + difference + "ns");
+	assertTrue((obj1.var1 == 1000) && (obj1.var2 == 1010));
     }
 }
