@@ -35,7 +35,6 @@ public class TestObjectDriver implements Savable {
 
     public void test1A(MonitorWithAborts monitor) {
 	monitor.synchronize();
-	System.out.println(this.saveVar1 + " " + this.saveVar2);
 	increase();
 	monitor.abortNotify();
 	monitor.release();
@@ -60,12 +59,3 @@ public class TestObjectDriver implements Savable {
     
 }
 
-class SyncThread1 implements Runnable{
-
-    @Override
-    public void run() {
-	// TODO Auto-generated method stub
-	
-    }
-	
-}

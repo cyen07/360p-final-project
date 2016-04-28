@@ -12,7 +12,7 @@ public class TestSuite {
 	obj1.test1A(monitor1);
 	long done = System.nanoTime();
 	long difference = done - start;
-	System.out.println("Execution Time of Test1A: " + difference + "ns");
+	System.out.println("Execution Time of Monitor with Aborts (not aborted): " + difference + "ns");
 	assertTrue((obj1.var1 == 1) && (obj1.var2 == 11));
     }
     
@@ -23,7 +23,7 @@ public class TestSuite {
 	obj1.test1B();
 	long done = System.nanoTime();
 	long difference = done - start;
-	System.out.println("Execution Time of Test1B: " + difference + "ns");
+	System.out.println("Execution Time of Synchronized Monitor: " + difference + "ns");
 	assertTrue((obj1.var1 == 1) && (obj1.var2 == 11));
     }
     
@@ -35,7 +35,7 @@ public class TestSuite {
 	obj1.test2A(monitor1);
 	long done = System.nanoTime();
 	long difference = done - start;
-	System.out.println("Execution Time of Test2A: " + difference + "ns");
+	System.out.println("Execution Time of Monitor with Aborts (aborted): " + difference + "ns");
 	assertTrue((obj1.var1 == 0) && (obj1.var2 == 10));
     }
     
@@ -43,35 +43,35 @@ public class TestSuite {
     public void Test3A(){
 	TestObjectDriver obj1 = new TestObjectDriver(0,10);
 	MonitorWithAborts monitor1 = new MonitorWithAborts(obj1);
-	Runnable thread1 = new Runnable(){
+	Thread thread1 = new Thread(){
 
 	    @Override
 	    public void run() {
 		monitor1.synchronize();
 		obj1.increase();
+		for(int i = 0; i<50;i++){
+		    System.out.println("Thread 1 count " + i + " ++");
+		}
 		try{
 		    Thread.sleep(1000);
 		}
-		catch(InterruptedException e){
+		catch(Exception e){
 		    e.printStackTrace();
 		}
 		monitor1.abortNotify();
 		monitor1.release();
 	    }
 	};
-	Runnable thread2 = new Runnable(){
+	Thread thread2 = new Thread(){
 	    @Override
 	    public void run(){
 		monitor1.synchronize();
 		try{
         		obj1.increase();
-        		obj1.increase();
-        		try{
-        		    Thread.sleep(100);
-        		}
-        		catch(InterruptedException e){
-        		    e.printStackTrace();
-        		}
+        		for(int i = 0; i<50;i++){
+    			    System.out.println("Thread 2 count " + i + " --");
+    				}
+        		Thread.sleep(1000);
         		throw new Exception();
 		}
 		catch(Exception e){
@@ -79,12 +79,35 @@ public class TestSuite {
 		}
 	    }
 	};
+	Thread thread3 = new Thread(){
+	    @Override 
+	    public void run(){
+		for(int i = 0; i<50;i++){
+		    System.out.println("Thread 3 count " + i);
+		    
+		}
+		try{
+		    Thread.sleep(500);
+		}
+		catch(Exception e){
+		    e.printStackTrace();
+		}
+	    }
+	};
 	long start = System.currentTimeMillis();
-	thread1.run();
-	thread2.run();
+	thread1.start();
+	thread2.start();
+	thread3.start();
+	try {
+	    thread1.join();
+	    thread2.join();
+	    thread3.join();
+	} catch (InterruptedException e) {
+	    e.printStackTrace();
+	}
 	long end = System.currentTimeMillis();
 	long difference = end - start;
-	System.out.println("Execution Time of Test3A: " + difference + "ms");
+	System.out.println("Expected Time of Test ~2000ms: " + difference + "ms");
 	assertTrue((obj1.var1 == 1) && (obj1.var2 == 11));
     }
 }
